@@ -4,12 +4,13 @@
 #define FILE_H
 
 #include <string>
+#include "permissions.h"
 using namespace std;
 
 class File
 {
     private:
-        string permissions;
+        Permissions permissions;
         string owner;
         string group;
         int size;
@@ -27,7 +28,7 @@ class File
 
         ~File() {}
 
-        string getName();
+        string getName() const;
 };
 
 #endif
