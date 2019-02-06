@@ -3,6 +3,8 @@
 #ifndef PERMISSIONS_H
 #define PERMISSIONS_H
 
+#include <string>
+
 class Permissions
 {
     private:
@@ -10,7 +12,7 @@ class Permissions
     public:
         Permissions();
 
-        void updatePermissions(const string permissions);
+        void updatePermissions(const std::string permissions);
 
         void getPermissions() const;
 

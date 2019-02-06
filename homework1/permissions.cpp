@@ -2,7 +2,7 @@
 
 #include "permissions.h"
 
-void updatePermissions(const string permissions) {
+void updatePermissions(const std::string permissions) {
     return;
 }
 
