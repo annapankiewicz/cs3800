@@ -3,32 +3,35 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include <string>
+#include <vector>
+
 #include "permissions.h"
-using namespace std;
+#include "properties.h"
 
 class File
 {
     private:
-        Permissions permissions;
-        string owner;
-        string group;
-        int size;
-        string time_stamp;
-        string name;
-        bool is_file;
+        Properties prop;
+
+        File* parent;
+
+        std::vector<File> sub_directory;
+        std::vector<File> files;
 
     public:
         File() {}
 
-        File(string n, bool type) {
-            name = n;
-            is_file = type;
+        File(std::string name, bool type) {
+            prop.name = name;
+            prop.is_file = type;
         }
 
         ~File() {}
 
-        string getName() const;
+        void setName(const std::string& name);
+        std::string getName() const;
+
+        void setFileType(const bool type);
 };
 
 #endif
