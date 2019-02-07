@@ -15,7 +15,9 @@ class Shell
     public:
         Shell();
 
-        void process(const std::string& command);
+        void process(std::string& command);
+
+        void parseCommand(std::string command, std::vector<std::string>& result);
 };
 
 #endif
