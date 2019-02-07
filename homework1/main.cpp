@@ -3,28 +3,27 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "file.h"
-using namespace std;
 
-void prompt();
+#include "file.h"
+#include "shell.h"
+
+void prompt(Shell emulator);
 
 int main() {
 
-    // initialize directory structure and "create" root directory
-    vector<File> root;
-    root.push_back(File ("root", false));
-
-    prompt();
+    Shell shell;
+    prompt(shell);
 
     return 0;
 }
 
-void prompt()
+void prompt(Shell emulator)
 {
-    string command = "";
+    std::string command = "";
     while(!((command == "quit") || (command == "exit")))
     {
-        cout << "[anna@cs3800]$ ";
-        getline(cin, command);
+        std::cout << "[anna@cs3800]$ ";
+        getline(std::cin, command);
+        emulator.process(command);
     }
 }
