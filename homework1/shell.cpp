@@ -90,3 +90,38 @@ void Shell::ls(std::vector<std::string> command) {
 
     return;
 }
+
+void Shell::cd(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::pwd(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::mkdir(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::rmdir(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::rm(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::chmod(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::touch(std::vector<std::string> command) {
+
+    return;
+}
