@@ -4,6 +4,8 @@
 #define FILE_H
 
 #include <vector>
+#include <ctime>
+#include <string>
 
 #include "permissions.h"
 #include "properties.h"
@@ -15,10 +17,9 @@ class File
 
         File* parent;
 
-        std::vector<File> sub_directory;
+    public:
         std::vector<File> files;
 
-    public:
         File() {}
 
         File(std::string name, bool type) {
@@ -32,6 +33,8 @@ class File
         std::string getName() const;
 
         void setFileType(const bool type);
+
+        std::string longListing();
 };
 
 #endif

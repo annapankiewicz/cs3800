@@ -18,6 +18,8 @@ class Shell
         void process(std::string& command);
 
         void parseCommand(std::string command, std::vector<std::string>& result);
+
+        void ls(std::vector<std::string> command);
 };
 
 #endif

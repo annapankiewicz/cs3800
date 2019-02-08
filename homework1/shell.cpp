@@ -20,7 +20,7 @@ void Shell::process(std::string& command) {
 
     if(cmd.size() != 0) {
         if(cmd[0] == "ls") {
-            // ls command, including the -l option
+            ls(cmd);
         }
         else if (cmd[0] == "cd") {
             // cd command
@@ -64,11 +64,28 @@ void Shell::parseCommand(std::string command, std::vector<std::string>& result) 
     for(std::string command; stream >> command;)
         result.push_back(command);
 
-    // temporary sanity check to make sure this is working the way I want
-    std::vector<std::string>::iterator it;
+    return;
+}
 
-    for(it=result.begin(); it!=result.end(); it++) {
-        std::cout << " " << *it << std::endl;
+void Shell::ls(std::vector<std::string> command) {
+
+    // process just a normal ls
+    if(command.size() == 1) {
+        for(int i = 0; i < current_dir->files.size(); i++) {
+            std::cout << current_dir->files[i].getName() << "\t";
+        }
+    }
+    // do a long listing
+    else if(command.size() == 2) {
+        if(command[1] == "-l") {
+            for(int i = 0; i < current_dir->files.size(); i++) {
+                std::cout << current_dir->files[i].longListing() << std::endl;
+            }
+        }
+    }
+    // something is quite wrong
+    else {
+        std::cout << "error: invalid ls command" << std::endl;
     }
 
     return;

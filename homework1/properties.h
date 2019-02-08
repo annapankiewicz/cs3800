@@ -27,6 +27,4 @@ struct Properties
     }
 };
 
-std::string longListing(const Properties& p);
-
 #endif
