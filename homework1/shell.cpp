@@ -41,7 +41,7 @@ void Shell::process(std::string& command) {
             // chmod command
         }
         else if (cmd[0] == "touch") {
-            // touch command
+            touch(cmd);
         }
         else if ((cmd[0] == "exit") || (cmd[0] == "quit")) {
             std::cout << "exiting shell emulation..." << std::endl;
@@ -74,6 +74,7 @@ void Shell::ls(std::vector<std::string> command) {
         for(int i = 0; i < current_dir->files.size(); i++) {
             std::cout << current_dir->files[i].getName() << "\t";
         }
+        std::cout << std::endl;
     }
     // do a long listing
     else if(command.size() == 2) {
@@ -122,6 +123,36 @@ void Shell::chmod(std::vector<std::string> command) {
 }
 
 void Shell::touch(std::vector<std::string> command) {
+
+    if(command.size() != 2) {
+        std::cout << "error: must provide target file" << std::endl;
+        return;
+    }
+
+    Properties target;
+    std::string filename = command[1];
+    bool found = false;
+
+    // check to see if the file already exists in the directory we're in
+    for(int i = 0; i < current_dir->files.size(); i++) {
+        if(current_dir->files[i].getName() == filename) {
+            found = true;
+            target = current_dir->files[i].getProp();
+        }
+    }
+
+    // if the file is found, update the timestamp
+    if(found) {
+        // TODO(anna): this still seems to not actually update the timestamp
+        time(&target.timestamp);
+    }
+    // if the file's not found, create it
+    // also assuming we can't make a file with the same name as a directory
+    else {
+        File new_file(filename, true);
+        new_file.setParent(current_dir);
+        current_dir->files.push_back(new_file);
+    }
 
     return;
 }

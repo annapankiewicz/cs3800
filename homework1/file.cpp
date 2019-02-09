@@ -4,6 +4,7 @@
 
 void File::setName(const std::string& name) {
     prop.name = name;
+    return;
 }
 
 std::string File::getName() const {
@@ -12,6 +13,16 @@ std::string File::getName() const {
 
 void File::setFileType(const bool type) {
     prop.is_file = type;
+    return;
+}
+
+Properties File::getProp() const {
+    return prop;
+}
+
+void File::setParent(File* current_dir) {
+    parent = current_dir;
+    return;
 }
 
 std::string File::longListing() {

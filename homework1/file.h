@@ -34,6 +34,10 @@ class File
 
         void setFileType(const bool type);
 
+        Properties getProp() const;
+
+        void setParent(File* current_dir);
+
         std::string longListing();
 };
 
