@@ -23,13 +23,13 @@ void Shell::process(std::string& command) {
             ls(cmd);
         }
         else if (cmd[0] == "cd") {
-            // cd command
+            cd(cmd);
         }
         else if (cmd[0] == "pwd") {
             // pwd command
         }
         else if (cmd[0] == "mkdir") {
-            // mkdir command woohoo
+            mkdir(cmd);
         }
         else if (cmd[0] == "rmdir") {
             // rmdir command
@@ -93,6 +93,47 @@ void Shell::ls(std::vector<std::string> command) {
 }
 
 void Shell::cd(std::vector<std::string> command) {
+
+    // gotta have a directory to go to
+    if(command.size() != 2) {
+        std::cout << "error: invalid cd command" << std::endl;
+        return;
+    }
+
+    if(command[1] == "..") {
+        // assuming we can't cd .. past root
+        if((current_dir->getName() == "root")) {
+            std::cout << "error: already in root directory" << std::endl;
+        }
+        else {
+            // set working directory to parent
+            current_dir = current_dir->getParent();
+        }
+    }
+    else {
+        File* target = NULL;
+        std::string target_dir = command[1];
+        bool found = false;
+
+        // directory has to exist
+        for(int i = 0; i < current_dir->files.size(); i++) {
+            if(current_dir->files[i].getName() == target_dir) {
+                found = true;
+                target = &(current_dir->files[i]);
+            }
+        }
+
+        if(found) {
+            // set parent pointer
+            target->setParent(current_dir);
+            // update current working directory pointer
+            current_dir = target;
+        }
+        else {
+            std::cout << "error: invalid directory" << std::endl;
+            return;
+        }
+    }
 
     return;
 }
