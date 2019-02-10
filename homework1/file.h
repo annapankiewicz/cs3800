@@ -37,6 +37,7 @@ class File
         Properties getProp() const;
 
         void setParent(File* current_dir);
+        File* getParent();
 
         std::string longListing();
 };

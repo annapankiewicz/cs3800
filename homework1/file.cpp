@@ -25,6 +25,10 @@ void File::setParent(File* current_dir) {
     return;
 }
 
+File* File::getParent() {
+    return parent;
+}
+
 std::string File::longListing() {
 
     std::string listing;

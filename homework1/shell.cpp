@@ -23,13 +23,13 @@ void Shell::process(std::string& command) {
             ls(cmd);
         }
         else if (cmd[0] == "cd") {
-            cd(cmd);
+            // cd command
         }
         else if (cmd[0] == "pwd") {
             // pwd command
         }
         else if (cmd[0] == "mkdir") {
-            mkdir(cmd);
+            // mkdir command woohoo
         }
         else if (cmd[0] == "rmdir") {
             // rmdir command
@@ -144,6 +144,34 @@ void Shell::pwd(std::vector<std::string> command) {
 }
 
 void Shell::mkdir(std::vector<std::string> command) {
+
+    // error checking, gotta have a directory name to make
+    if(command.size() != 2) {
+        std::cout << "error: invalid mkdir command" << std::endl;
+        return;
+    }
+
+    std::string filename = command[1];
+    bool found = false;
+
+    // TODO(anna): if there's time, refactor touch & mkdir;
+    //             there's way too much repetition
+    // see if there's already a directory with the same name
+    for(int i = 0; i < current_dir->files.size(); i++) {
+        if(current_dir->files[i].getName() == filename) {
+            found = true;
+        }
+    }
+
+    if(found) {
+        std::cout << "error: cannot create directory with duplicate name" << std::endl;
+        return;
+    }
+    else {
+        File new_file(filename, false);
+        new_file.setParent(current_dir);
+        current_dir->files.push_back(new_file);
+    }
 
     return;
 }
