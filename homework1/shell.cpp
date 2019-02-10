@@ -33,10 +33,10 @@ void Shell::process(std::string& command) {
             mkdir(cmd);
         }
         else if (cmd[0] == "rmdir") {
-            // rmdir command
+            rmdir(cmd);
         }
         else if (cmd[0] == "rm") {
-            // rm command
+            rm(cmd);
         }
         else if (cmd[0] == "chmod") {
             // chmod command
@@ -83,6 +83,9 @@ void Shell::ls(std::vector<std::string> command) {
             for(int i = 0; i < current_dir->files.size(); i++) {
                 std::cout << current_dir->files[i].longListing() << std::endl;
             }
+        }
+        else {
+            std::cout << "error: unrecognized option" << std::endl;
         }
     }
     // something is quite wrong
@@ -193,6 +196,32 @@ void Shell::mkdir(std::vector<std::string> command) {
 }
 
 void Shell::rmdir(std::vector<std::string> command) {
+
+    if(command.size() != 2) {
+        std::cout << "error: invalid rmdir command" << std::endl;
+        return;
+    }
+
+    // try to find said directory to remove
+    std::string target_name = command[1];
+    std::vector<File>::iterator it;
+
+    it = std::find_if(current_dir->files.begin(),
+                      current_dir->files.end(),
+                      [&target_name](File const& target)
+                      {
+                          return target.getName() == target_name;
+                      }
+    );
+
+    // if the file is found, remove it
+    if(it != current_dir->files.end()) {
+        int target_index = std::distance(current_dir->files.begin(), it);
+        current_dir->files.erase(current_dir->files.begin() + target_index);
+    }
+    else {
+        std::cout << "error: no such directory to remove" << std::endl;
+    }
 
     return;
 }

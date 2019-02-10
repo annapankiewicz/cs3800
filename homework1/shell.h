@@ -3,6 +3,9 @@
 #ifndef SHELL_H
 #define SHELL_H
 
+#include <sstream>
+#include <algorithm>
+
 #include "file.h"
 #include "properties.h"
 
