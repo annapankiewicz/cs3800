@@ -202,6 +202,9 @@ void Shell::rmdir(std::vector<std::string> command) {
         return;
     }
 
+    // TODO(anna): additionally try to refactor rmdir and rm if there's time,
+    //             lots of repitition like touch/mkdir
+
     // try to find said directory to remove
     std::string target_name = command[1];
     std::vector<File>::iterator it;
@@ -210,7 +213,9 @@ void Shell::rmdir(std::vector<std::string> command) {
                       current_dir->files.end(),
                       [&target_name](File const& target)
                       {
-                          return target.getName() == target_name;
+                          // make sure it's a directory and has the right name
+                          return ((target.getName() == target_name) &&
+                                  (target.getFileType() == false));
                       }
     );
 
@@ -227,6 +232,32 @@ void Shell::rmdir(std::vector<std::string> command) {
 }
 
 void Shell::rm(std::vector<std::string> command) {
+
+    if(command.size() != 2) {
+        std::cout << "error: invalid rm command" << std::endl;
+        return;
+    }
+
+    std::string target_name = command[1];
+    std::vector<File>::iterator it;
+
+    it = std::find_if(current_dir->files.begin(),
+                      current_dir->files.end(),
+                      [&target_name](File const& target)
+                      {
+                          // does it exist & is it a file
+                          return ((target.getName() == target_name) &&
+                                  (target.getFileType() == true));
+                      }
+    );
+
+    if(it != current_dir->files.end()) {
+        int target_index = std::distance(current_dir->files.begin(), it);
+        current_dir->files.erase(current_dir->files.begin() + target_index);
+    }
+    else {
+        std::cout << "error: no such file to remove" << std::endl;
+    }
 
     return;
 }

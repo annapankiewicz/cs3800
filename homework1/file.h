@@ -33,6 +33,7 @@ class File
         std::string getName() const;
 
         void setFileType(const bool type);
+        bool getFileType() const;
 
         Properties getProp() const;
 

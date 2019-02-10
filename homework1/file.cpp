@@ -16,6 +16,10 @@ void File::setFileType(const bool type) {
     return;
 }
 
+bool File::getFileType() const {
+    return prop.is_file;
+}
+
 Properties File::getProp() const {
     return prop;
 }
