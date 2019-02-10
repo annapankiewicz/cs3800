@@ -9,6 +9,7 @@ Shell::Shell() {
     // initialize directory structure and "create" root directory
     root.setName("root");
     root.setFileType(false);
+    root.setParent(NULL);
     current_dir = &root;
 }
 
@@ -23,13 +24,13 @@ void Shell::process(std::string& command) {
             ls(cmd);
         }
         else if (cmd[0] == "cd") {
-            // cd command
+            cd(cmd);
         }
         else if (cmd[0] == "pwd") {
-            // pwd command
+            pwd(cmd);
         }
         else if (cmd[0] == "mkdir") {
-            // mkdir command woohoo
+            mkdir(cmd);
         }
         else if (cmd[0] == "rmdir") {
             // rmdir command
@@ -140,8 +141,23 @@ void Shell::cd(std::vector<std::string> command) {
 
 void Shell::pwd(std::vector<std::string> command) {
 
+    if(command.size() != 1) {
+        std::cout << "error: invalid pwd command" << std::endl;
+    }
+    else {
+        std::string path = "/";
+        File* target = current_dir;
+        while((target->getParent()) != NULL) {
+            path = "/" + target->getName() + path;
+            target = target->getParent();
+        }
+        path = "/root" + path;
+        std::cout << path << std::endl;
+    }
     return;
 }
+
+
 
 void Shell::mkdir(std::vector<std::string> command) {
 
