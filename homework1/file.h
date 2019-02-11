@@ -34,6 +34,7 @@ class File
         bool getFileType() const;
 
         Properties getProp() const;
+        Properties* getPropPointer();
 
         void setParent(File* current_dir);
         File* getParent();

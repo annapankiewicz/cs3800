@@ -304,7 +304,7 @@ void Shell::touch(std::vector<std::string> command) {
         return;
     }
 
-    Properties target;
+    Properties* target;
     std::string filename = command[1];
     bool found = false;
 
@@ -312,14 +312,13 @@ void Shell::touch(std::vector<std::string> command) {
     for(int i = 0; i < current_dir->files.size(); i++) {
         if(current_dir->files[i].getName() == filename) {
             found = true;
-            target = current_dir->files[i].getProp();
+            target = current_dir->files[i].getPropPointer();
         }
     }
 
     // if the file is found, update the timestamp
     if(found) {
-        // TODO(anna): this still seems to not actually update the timestamp
-        time(&target.timestamp);
+        time(&target->timestamp);
     }
     // if the file's not found, create it
     // also assuming we can't make a file with the same name as a directory

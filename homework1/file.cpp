@@ -24,6 +24,10 @@ Properties File::getProp() const {
     return prop;
 }
 
+Properties* File::getPropPointer() {
+    return &prop;
+}
+
 void File::setParent(File* current_dir) {
     parent = current_dir;
     return;
