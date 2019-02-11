@@ -17,9 +17,9 @@ struct Properties
     std::string name;
     bool is_file;
 
-    // initialize the file/directory's stuff with defaults
+    // initialize the file/directory's properties with defaults
     Properties() {
-        // TODO(anna): add permissions when it's actually possible
+        permissions.updatePermissions(644);
         owner = "root";
         group = "root";
         time(&timestamp);

@@ -37,7 +37,7 @@ std::string File::longListing() {
 
     std::string listing;
 
-    // postponing adding permissions until permissions actually work
+    listing += prop.permissions.getPermissions() + "\t";
 
     // get the owner and group names
     listing += prop.owner + "\t";

@@ -264,7 +264,35 @@ void Shell::rm(std::vector<std::string> command) {
 
 void Shell::chmod(std::vector<std::string> command) {
 
-    current_dir->getProp().permissions.updatePermissions(stoi(command[1]));
+    if(command.size() != 3) {
+        std::cout << "error: must provide permissions and target file" << std::endl;
+        return;
+    }
+
+    // make sure the thing exists
+    std::string target_name = command[2];
+    std::vector<File>::iterator it;
+
+    it = std::find_if(current_dir->files.begin(),
+                      current_dir->files.end(),
+                      [&target_name](File const& target)
+                      {
+                          // does it exist
+                          return (target.getName() == target_name);
+                      }
+    );
+
+    if(it != current_dir->files.end()) {
+        // where is the thing
+        int target_index = std::distance(current_dir->files.begin(), it);
+        // do the thing
+        current_dir->files[target_index].getProp().permissions.
+            updatePermissions(stoi(command[1]));
+
+    }
+    else {
+        std::cout << "error: file not found" << std::endl;
+    }
 
     return;
 }

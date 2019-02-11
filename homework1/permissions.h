@@ -16,12 +16,18 @@ class Permissions
 
         bool permissions[PERMISSION_SIZE];
 
+        enum modes {
+            READ = 0,
+            WRITE = 1,
+            EXECUTE = 2
+        };
+
     public:
         Permissions();
 
         void updatePermissions(int permissions);
 
-        void getPermissions() const;
+        std::string getPermissions() const;
 
         bool validDigit(const int digit);
 

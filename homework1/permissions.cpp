@@ -40,8 +40,35 @@ void Permissions::updatePermissions(int permission_code) {
     return;
 }
 
-void Permissions::getPermissions() const {
-    return;
+std::string Permissions::getPermissions() const {
+
+    std::string permission_string = "---------";
+    int mode;
+
+    for(int i = 0; i < PERMISSION_SIZE; i++) {
+        if(permissions[i]) {
+            mode = i % MODE_SIZE;
+            switch(mode) {
+                case 0:
+                    permission_string[i] = 'r';
+                    break;
+                case 1:
+                    permission_string[i] = 'w';
+                    break;
+                case 2:
+                    permission_string[i] = 'x';
+                    break;
+                default:
+                    std::cout << "error: this shouldn't happen" << std::endl;
+                    break;
+            }
+        }
+        else {
+            permission_string[i] = '-';
+        }
+    }
+
+    return permission_string;
 }
 
 bool Permissions::validDigit(const int digit) {
