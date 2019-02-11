@@ -39,7 +39,7 @@ void Shell::process(std::string& command) {
             rm(cmd);
         }
         else if (cmd[0] == "chmod") {
-            // chmod command
+            chmod(cmd);
         }
         else if (cmd[0] == "touch") {
             touch(cmd);
@@ -263,6 +263,8 @@ void Shell::rm(std::vector<std::string> command) {
 }
 
 void Shell::chmod(std::vector<std::string> command) {
+
+    current_dir->getProp().permissions.updatePermissions(stoi(command[1]));
 
     return;
 }

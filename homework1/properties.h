@@ -10,7 +10,7 @@
 
 struct Properties
 {
-    // Permissions permissions;
+    Permissions permissions;
     std::string owner;
     std::string group;
     time_t timestamp;

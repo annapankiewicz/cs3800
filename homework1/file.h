@@ -27,8 +27,6 @@ class File
             prop.is_file = type;
         }
 
-        ~File() {}
-
         void setName(const std::string& name);
         std::string getName() const;
 
