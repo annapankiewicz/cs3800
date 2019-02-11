@@ -17,7 +17,7 @@ void Permissions::updatePermissions(int permission_code) {
         // get each set of permission digits according to group
         std::string perm_string;
         for(int i = 0; i < MODE_SIZE; i++) {
-            perm_string = std::bitset<3>(access[i]).to_string() + perm_string;
+            perm_string = perm_string + std::bitset<3>(access[i]).to_string();
         }
 
         // assign the appropriate permissions to the actual permissions
