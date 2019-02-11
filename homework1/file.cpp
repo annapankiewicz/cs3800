@@ -11,7 +11,7 @@ std::string File::getName() const {
     return prop.name;
 }
 
-void File::setFileType(const bool type) {
+void File::setFileType(const bool& type) {
     prop.is_file = type;
     return;
 }
@@ -20,11 +20,7 @@ bool File::getFileType() const {
     return prop.is_file;
 }
 
-Properties File::getProp() const {
-    return prop;
-}
-
-Properties* File::getPropPointer() {
+Properties* File::getProp() {
     return &prop;
 }
 

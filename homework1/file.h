@@ -30,11 +30,10 @@ class File
         void setName(const std::string& name);
         std::string getName() const;
 
-        void setFileType(const bool type);
+        void setFileType(const bool& type);
         bool getFileType() const;
 
-        Properties getProp() const;
-        Properties* getPropPointer();
+        Properties* getProp();
 
         void setParent(File* current_dir);
         File* getParent();

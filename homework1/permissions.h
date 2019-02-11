@@ -25,9 +25,11 @@ class Permissions
     public:
         Permissions();
 
-        void updatePermissions(int permissions);
+        void updatePermissions(int permission_code);
 
-        std::string getPermissions() const;
+        std::string getPermissionsString() const;
+
+        bool checkPermissionValidity(int permission_code, int access[MODE_SIZE]);
 
         bool validDigit(const int digit);
 

@@ -286,7 +286,7 @@ void Shell::chmod(std::vector<std::string> command) {
         // where is the thing
         int target_index = std::distance(current_dir->files.begin(), it);
         // do the thing
-        current_dir->files[target_index].getProp().permissions.
+        current_dir->files[target_index].getProp()->permissions.
             updatePermissions(stoi(command[1]));
 
     }
@@ -312,7 +312,7 @@ void Shell::touch(std::vector<std::string> command) {
     for(int i = 0; i < current_dir->files.size(); i++) {
         if(current_dir->files[i].getName() == filename) {
             found = true;
-            target = current_dir->files[i].getPropPointer();
+            target = current_dir->files[i].getProp();
         }
     }
 
