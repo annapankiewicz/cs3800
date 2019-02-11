@@ -37,11 +37,18 @@ std::string File::longListing() {
 
     std::string listing;
 
-    listing += prop.permissions.getPermissions() + "\t";
+    // add permissions
+    listing += prop.permissions.getPermissionsString() + "  ";
+
+    // add fake number of links
+    listing += std::to_string(prop.num_links) + "  ";
 
     // get the owner and group names
-    listing += prop.owner + "\t";
-    listing += prop.group + "\t";
+    listing += prop.owner + "  ";
+    listing += prop.group + "  ";
+
+    // add fake file size
+    listing += std::to_string(prop.file_size) + "  ";
 
     // make timestamp human readable and add it
     struct tm * time;
@@ -55,7 +62,11 @@ std::string File::longListing() {
 
     // make a directory look like a directory if applicable
     if(!prop.is_file) {
-        listing += '\\';
+        listing = "d" + listing;
+        listing += "\\";
+    }
+    else {
+        listing = "-" + listing;
     }
 
     return listing;

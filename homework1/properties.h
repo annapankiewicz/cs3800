@@ -11,8 +11,10 @@
 struct Properties
 {
     Permissions permissions;
+    int num_links;
     std::string owner;
     std::string group;
+    int file_size;
     time_t timestamp;
     std::string name;
     bool is_file;
@@ -20,8 +22,10 @@ struct Properties
     // initialize the file/directory's properties with defaults
     Properties() {
         permissions.updatePermissions(644);
+        num_links = 1;
         owner = "root";
         group = "root";
+        file_size = 1024;
         time(&timestamp);
         is_file = false;
     }
