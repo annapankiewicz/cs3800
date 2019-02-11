@@ -121,7 +121,8 @@ void Shell::cd(std::vector<std::string> command) {
 
         // directory has to exist
         for(int i = 0; i < current_dir->files.size(); i++) {
-            if(current_dir->files[i].getName() == target_dir) {
+            if((current_dir->files[i].getName() == target_dir) &&
+               (current_dir->files[i].getFileType() == false)) {
                 found = true;
                 target = &(current_dir->files[i]);
             }
