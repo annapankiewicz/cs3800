@@ -35,3 +35,11 @@ Required commands to support:
 10. `exit/quit`
 
 This program is to be coded in C++ and submitted in Canvas before the deadline.
+
+## Homework 2
+
+Your task is to do a code trace through the problem provided. Submit both the
+correct code trace (similar to those done in class) and the answers to the
+questions regarding the state of the system at the conclusion of your trace.
+The operation of the General and Binary Semaphores should be exactly as they
+appeared on the concurrency PPT slides.
