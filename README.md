@@ -43,3 +43,15 @@ correct code trace (similar to those done in class) and the answers to the
 questions regarding the state of the system at the conclusion of your trace.
 The operation of the General and Binary Semaphores should be exactly as they
 appeared on the concurrency PPT slides.
+
+## Homework 3
+The sleeping barbers have fallen so deeply asleep that their program no longer
+functions! The good news is the "heavy lifting" is done in that the code is
+provided and follows the code trace you worked previously with binary and
+general semaphores. The bad news is it is not running to completion. :(
+
+Adjust the code so the 2-barber, 4-customer setup runs to completion as
+expected under any interleaving. To help, you are shown an area
+-- ONLY MAKE CHANGES BELOW THIS LINE -- which helps show you where we
+expect the fix to be happening. (And nothing should be changed above that
+line - duh.)
