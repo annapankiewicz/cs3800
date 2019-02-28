@@ -173,21 +173,13 @@ void CutHair(int id)
 
 ****************************************************/
 
-int numberOfCustomersServed = 0;
-general_semaphore existingCustomers;
-
 void Barber(int thread_num) {
-    while (true) {
-        // need to only wait on customer if there are customers still left.
-        // barbers aren't finishing because they're waiting on a customer
-        // that'll never happen
-        CustomerReady.wait();
-        AccessToWaitingRoomSeats.wait();
-        numberOfFreeWaitingRoomSeats += 1;
-        BarberReady.signal();
-        AccessToWaitingRoomSeats.signal();
-        CutHair(thread_num);
-    }
+    CustomerReady.wait();
+    AccessToWaitingRoomSeats.wait();
+    numberOfFreeWaitingRoomSeats += 1;
+    BarberReady.signal();
+    AccessToWaitingRoomSeats.signal();
+    CutHair(thread_num);
 }
 
 void Customer(int thread_num) {
@@ -196,12 +188,12 @@ void Customer(int thread_num) {
         numberOfFreeWaitingRoomSeats -= 1;
         CustomerReady.signal();
         AccessToWaitingRoomSeats.signal();
-        BarberReady.wait();
-        GetHairCut(thread_num);
+        if(BarberReady.try_wait()) {
+            GetHairCut(thread_num);
+        }
     }
     else
     {
-        //no space, must leave! 
         AccessToWaitingRoomSeats.signal();
     }
 }
