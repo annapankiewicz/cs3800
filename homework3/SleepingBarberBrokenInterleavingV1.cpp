@@ -173,8 +173,14 @@ void CutHair(int id)
 
 ****************************************************/
 
+int numberOfCustomersServed = 0;
+general_semaphore existingCustomers;
+
 void Barber(int thread_num) {
     while (true) {
+        // need to only wait on customer if there are customers still left.
+        // barbers aren't finishing because they're waiting on a customer
+        // that'll never happen
         CustomerReady.wait();
         AccessToWaitingRoomSeats.wait();
         numberOfFreeWaitingRoomSeats += 1;
