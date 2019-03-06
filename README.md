@@ -55,3 +55,39 @@ expected under any interleaving. To help, you are shown an area
 -- ONLY MAKE CHANGES BELOW THIS LINE -- which helps show you where we
 expect the fix to be happening. (And nothing should be changed above that
 line - duh.)
+
+## Homework 4
+When implemented, these commands should complement the core functionality of
+the file system commands you have already implemented. When users do not have
+read permissions, the files/directories should no longer appear. When users
+do not have write permissions, they should not be able to rm/rmdir the files.
+When users do not have execute permissions they should not be able to ./ the
+file. Note: ./ functionality can be as easy as printing “[file_name]
+ran/executed.” For each of the RWX permissions, the most permissive
+available should be used. In other words, if the group permissions prohibited
+reading but the owner permissions gave read permissions, the user would be
+allowed to read. Likewise, if a user was part of the group where group
+permissions allowed reading but was not the owner and global reading was not
+allowed, the files/folders should still be visible (by being in the group
+that held the permissions).
+
+You can check Linux Man pages for the usage or see the examples in the
+detailed discussion for each command. The required commands to support in
+this iteration are:
+1. `useradd`
+2. `useradd -G`
+3. `usermod -a -G`
+4. `chown`
+4. `chgrp`
+5. `./` (execute)
+6. `groups`
+7. `groupadd`
+8. `userdel`
+9. `userdel -G`
+
+In addition to the standard Linux-based commands, we need a way to switch
+users. Implement a new switchto command which will switch to a different user.
+
+This program is to be coded in C++ and submitted in Canvas before the deadline.
+This is an individual assignment – each person should produce and submit their
+own code solution.
