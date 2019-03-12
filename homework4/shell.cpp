@@ -44,6 +44,30 @@ void Shell::process(std::string& command) {
         else if (cmd[0] == "touch") {
             touch(cmd);
         }
+        else if (cmd[0] == "useradd") {
+            std::cout << "doing useradd!" << std::endl;
+        }
+        else if (cmd[0] == "usermod") {
+            std::cout << "doing usermod!" << std::endl;
+        }
+        else if (cmd[0] == "chown") {
+            std::cout << "doing chown!" << std::endl;
+        }
+        else if (cmd[0] == "chgrp") {
+            std::cout << "doing chgrp!" << std::endl;
+        }
+        else if (cmd[0] == "./") {
+            std::cout << "executing things!" << std::endl;
+        }
+        else if (cmd[0] == "groups") {
+            std::cout << "doing groups!" << std::endl;
+        }
+        else if (cmd[0] == "groupadd") {
+            std::cout << "doing groupadd!" << std::endl;
+        }
+        else if (cmd[0] == "userdel") {
+            std::cout << "doing userdel!" << std::endl;
+        }
         else if ((cmd[0] == "exit") || (cmd[0] == "quit")) {
             std::cout << "exiting shell emulation..." << std::endl;
         }
