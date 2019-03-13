@@ -424,3 +424,38 @@ void Shell::useradd(std::vector<std::string> command) {
         }
     }
 }
+
+void Shell::usermod(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::chown(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::chgrp(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::execute(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::groups(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::groupadd(std::vector<std::string> command) {
+
+    return;
+}
+
+void Shell::userdel(std::vector<std::string> command) {
+
+    return;
+}

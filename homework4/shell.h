@@ -36,6 +36,14 @@ class Shell
         void chmod(std::vector<std::string> command);
         void touch(std::vector<std::string> command);
         void useradd(std::vector<std::string> command);
+        void usermod(std::vector<std::string> command);
+        void chown(std::vector<std::string> command);
+        void chgrp(std::vector<std::string> command);
+        void execute(std::vector<std::string> command);
+        void groups(std::vector<std::string> command);
+        void groupadd(std::vector<std::string> command);
+        void userdel(std::vector<std::string> command);
+
 };
 
 #endif
