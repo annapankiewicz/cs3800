@@ -8,12 +8,16 @@
 
 #include "file.h"
 #include "properties.h"
+#include "user.h"
 
 class Shell
 {
     private:
         File root;
         File* current_dir;
+        User* current_user;
+        std::vector<User> users;
+        std::vector<std::string> s_groups;
 
     public:
         Shell();
@@ -21,6 +25,7 @@ class Shell
         void process(std::string& command);
 
         void parseCommand(std::string command, std::vector<std::string>& result);
+        void parseGroups(std::string command, std::vector<std::string>& result);
 
         void ls(std::vector<std::string> command);
         void cd(std::vector<std::string> command);
@@ -30,6 +35,7 @@ class Shell
         void rm(std::vector<std::string> command);
         void chmod(std::vector<std::string> command);
         void touch(std::vector<std::string> command);
+        void useradd(std::vector<std::string> command);
 };
 
 #endif

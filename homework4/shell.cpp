@@ -11,6 +11,8 @@ Shell::Shell() {
     root.setFileType(false);
     root.setParent(NULL);
     current_dir = &root;
+    users.push_back(User("anna"));
+    s_groups.push_back("users");
 }
 
 void Shell::process(std::string& command) {
@@ -45,7 +47,7 @@ void Shell::process(std::string& command) {
             touch(cmd);
         }
         else if (cmd[0] == "useradd") {
-            std::cout << "doing useradd!" << std::endl;
+            useradd(cmd);
         }
         else if (cmd[0] == "usermod") {
             std::cout << "doing usermod!" << std::endl;
@@ -89,6 +91,18 @@ void Shell::parseCommand(std::string command, std::vector<std::string>& result) 
     for(std::string command; stream >> command;)
         result.push_back(command);
 
+    return;
+}
+
+void Shell::parseGroups(std::string command, std::vector<std::string>& result) {
+    std::istringstream stream(command);
+    std::string group;
+
+    while(stream.good()) {
+        std::string substring;
+        std::getline(stream, substring, ',');
+        result.push_back(substring);
+    }
     return;
 }
 
@@ -354,4 +368,59 @@ void Shell::touch(std::vector<std::string> command) {
     }
 
     return;
+}
+
+void Shell::useradd(std::vector<std::string> command) {
+    if(command.size() == 1) {
+        std::cout << "error: must specify user and optionally groups" << std::endl;
+        return;
+    }
+
+    if(command[1] == "-G") {
+        if(command.size() != 4) {
+            std::cout << "error: must specify groups and username" << std::endl;
+            return;
+        }
+
+        std::string username = command[3];
+        std::vector<User>::iterator it;
+        it = std::find_if(users.begin(),
+                          users.end(),
+                          [&username](User const& target)
+                          {
+                            return (target.getName() == username);
+                          }
+        );
+
+        if(it == users.end()) {
+            std::vector<std::string> result;
+            parseGroups(command[2], result);
+            users.push_back(User(username, result));
+        }
+        else {
+            std::cout << "error: user already exists" << std::endl;
+        }
+    }
+    else {
+        if(command.size() != 2) {
+            std::cout << "error: must specify user to add" << std::endl;
+            return;
+        }
+        std::string username = command[1];
+        std::vector<User>::iterator it;
+        it = std::find_if(users.begin(),
+                          users.end(),
+                          [&username](User const& target)
+                          {
+                            return (target.getName() == username);
+                          }
+        );
+
+        if(it == users.end()) {
+            users.push_back(User(username));
+        }
+        else {
+            std::cout << "error: user already exists" << std::endl;
+        }
+    }
 }
