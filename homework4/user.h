@@ -11,9 +11,9 @@ class User
 {
     private:
         std::string u_name;
-        std::vector<std::string> u_groups;
 
     public:
+        std::vector<std::string> u_groups;
 
         User() {
             u_name = "default_user";
@@ -27,10 +27,13 @@ class User
 
         User(std::string name, std::vector<std::string> groups) {
             u_name = name;
+            u_groups.push_back("users");
             u_groups.insert(u_groups.end(), groups.begin(), groups.end());
         }
 
+        void setName(std::string name);
         std::string getName() const;
+
 };
 
 #endif

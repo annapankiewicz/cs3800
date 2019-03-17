@@ -23,8 +23,8 @@ struct Properties
     Properties() {
         permissions.updatePermissions(644);
         num_links = 1;
-        owner = "root";
-        group = "root";
+        owner = "anna";
+        group = "users";
         file_size = 1024;
         time(&timestamp);
         is_file = false;

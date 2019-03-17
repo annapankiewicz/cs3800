@@ -11,7 +11,10 @@ Shell::Shell() {
     root.setFileType(false);
     root.setParent(NULL);
     current_dir = &root;
-    users.push_back(User("anna"));
+
+    default_user.setName("anna");
+    current_user = &default_user;
+    users.push_back(default_user);
     s_groups.push_back("users");
 }
 
@@ -68,7 +71,7 @@ void Shell::process(std::string& command) {
             std::cout << "doing groupadd!" << std::endl;
         }
         else if (cmd[0] == "userdel") {
-            std::cout << "doing userdel!" << std::endl;
+            userdel(cmd);
         }
         else if ((cmd[0] == "exit") || (cmd[0] == "quit")) {
             std::cout << "exiting shell emulation..." << std::endl;
@@ -456,6 +459,64 @@ void Shell::groupadd(std::vector<std::string> command) {
 }
 
 void Shell::userdel(std::vector<std::string> command) {
+    if(command.size() < 1) {
+        std::cout << "error: must specify user and optionally groups" << std::endl;
+        return;
+    }
+
+    if(command[1] == "-G") {
+        if(command.size() != 4) {
+            std::cout << "error: must specify groups and username" << std::endl;
+            return;
+        }
+        std::string username = command[3];
+
+        std::vector<User>::iterator it;
+        it = std::find_if(users.begin(),
+                          users.end(),
+                          [&username](User const& target)
+                          {
+                            return (target.getName() == username);
+                          }
+        );
+
+        // TODO(anna): should current user only be able to remove
+        // their own groups? because that's how this is set up, but without
+        // a check enforcing it
+        if(it != users.end()) {
+            std::string group_to_remove = command[2];
+            std::cout << group_to_remove << std::endl;
+            // make this use find instead
+            for(int i = 0; i < current_user->u_groups.size(); i++) {
+                if(current_user->u_groups[i] == group_to_remove) {
+                    current_user->u_groups.erase(
+                        current_user->u_groups.begin()+i);
+                }
+            }
+        }
+        else {
+            std::cout << "error: nonexistent user: " << username << std::endl;
+        }
+    }
+    else {
+        if(command.size() != 2) {
+            std::cout << "error: must specify user to delete" << std::endl;
+            return;
+        }
+
+        std::string username = command[1];
+        std::vector<User>::iterator it;
+        it = std::find_if(users.begin(),
+                          users.end(),
+                          [&username](User const& target)
+                          {
+                            return (target.getName() == username);
+                          }
+        );
+        if(it != users.end()) {
+            users.erase(users.begin()+(std::distance(users.begin(), it)));
+        }
+    }
 
     return;
 }

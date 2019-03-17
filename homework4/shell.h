@@ -15,6 +15,7 @@ class Shell
     private:
         File root;
         File* current_dir;
+        User default_user;
         User* current_user;
         std::vector<User> users;
         std::vector<std::string> s_groups;
