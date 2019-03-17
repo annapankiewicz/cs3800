@@ -65,7 +65,7 @@ void Shell::process(std::string& command) {
             std::cout << "executing things!" << std::endl;
         }
         else if (cmd[0] == "groups") {
-            std::cout << "doing groups!" << std::endl;
+            groups(cmd);
         }
         else if (cmd[0] == "groupadd") {
             std::cout << "doing groupadd!" << std::endl;
@@ -449,7 +449,15 @@ void Shell::execute(std::vector<std::string> command) {
 }
 
 void Shell::groups(std::vector<std::string> command) {
-
+    if(command.size() == 1) {
+        for(int i = 0; i < current_user->u_groups.size(); i++) {
+            std::cout << current_user->u_groups[i] << "\t";
+        }
+        std::cout << std::endl;
+    }
+    else {
+        std::cout << "error: unrecognized groups command" << std::endl;
+    }
     return;
 }
 
