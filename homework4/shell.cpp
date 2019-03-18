@@ -73,6 +73,9 @@ void Shell::process(std::string& command) {
         else if (cmd[0] == "userdel") {
             userdel(cmd);
         }
+        else if (cmd[0] == "switchto") {
+            switchto(cmd);
+        }
         else if ((cmd[0] == "exit") || (cmd[0] == "quit")) {
             std::cout << "exiting shell emulation..." << std::endl;
         }
@@ -523,6 +526,33 @@ void Shell::userdel(std::vector<std::string> command) {
         );
         if(it != users.end()) {
             users.erase(users.begin()+(std::distance(users.begin(), it)));
+        }
+    }
+
+    return;
+}
+
+void Shell::switchto(std::vector<std::string> command) {
+    if(command.size() != 2) {
+        std::cout << "error: must specify user" << std::endl;
+        return;
+    }
+    else {
+        std::string username = command[1];
+        std::vector<User>::iterator it;
+        it = std::find_if(users.begin(),
+                          users.end(),
+                          [&username](User const& target)
+                          {
+                            return (target.getName() == username);
+                          }
+        );
+        if(it != users.end()) {
+            User &new_user = *it;
+            current_user = &new_user;
+        }
+        else {
+            std::cout << "error: user does not exist" << std::endl;
         }
     }
 

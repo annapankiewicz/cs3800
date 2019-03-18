@@ -5,6 +5,7 @@
 
 #include <sstream>
 #include <algorithm>
+#include <string>
 
 #include "file.h"
 #include "properties.h"
@@ -44,6 +45,7 @@ class Shell
         void groups(std::vector<std::string> command);
         void groupadd(std::vector<std::string> command);
         void userdel(std::vector<std::string> command);
+        void switchto(std::vector<std::string> command);
 
 };
 
