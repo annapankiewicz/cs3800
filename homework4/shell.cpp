@@ -61,8 +61,8 @@ void Shell::process(std::string& command) {
         else if (cmd[0] == "chgrp") {
             std::cout << "doing chgrp!" << std::endl;
         }
-        else if (cmd[0] == "./") {
-            std::cout << "executing things!" << std::endl;
+        else if (cmd[0].substr(0,2) == "./") {
+            execute(cmd);
         }
         else if (cmd[0] == "groups") {
             groups(cmd);
@@ -447,6 +447,30 @@ void Shell::chgrp(std::vector<std::string> command) {
 }
 
 void Shell::execute(std::vector<std::string> command) {
+    // command will be one piece, such as "./file"
+    if(command.size() != 1) {
+        std::cout << "error: invalid command" << std::endl;
+        return;
+    }
+    else {
+        // get actual file name to be executed
+        std::string file = command[0];
+        file = file.substr(2);
+        bool found = false;
+        for(int i = 0; i < current_dir->files.size(); i++) {
+            if((current_dir->files[i].getName() == file) &&
+               (current_dir->files[i].getFileType())) {
+                found = true;
+                break;
+            }
+        }
+        if(found) {
+            std::cout << file << " executed" << std::endl;
+        }
+        else {
+            std::cout << "error: file not found" << std::endl;
+        }
+    }
 
     return;
 }
