@@ -27,6 +27,13 @@ class File
             prop.is_file = type;
         }
 
+        File(std::string name, bool type, std::string owner, std::string group) {
+            prop.name = name;
+            prop.is_file = type;
+            prop.owner = owner;
+            prop.group = group;
+        }
+
         void setName(const std::string& name);
         std::string getName() const;
 
