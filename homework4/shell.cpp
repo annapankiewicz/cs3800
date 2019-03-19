@@ -59,7 +59,7 @@ void Shell::process(std::string& command) {
             chown(cmd);
         }
         else if (cmd[0] == "chgrp") {
-            std::cout << "doing chgrp!" << std::endl;
+            chgrp(cmd);
         }
         else if (cmd[0].substr(0,2) == "./") {
             execute(cmd);
@@ -407,6 +407,8 @@ void Shell::useradd(std::vector<std::string> command) {
         if(it == users.end()) {
             std::vector<std::string> result;
             parseGroups(command[2], result);
+            // TODO(anna): should only be able to add user to groups if those
+            // groups already exist
             users.push_back(User(username, result));
         }
         else {
@@ -514,24 +516,24 @@ void Shell::chown(std::vector<std::string> command) {
 void Shell::chgrp(std::vector<std::string> command) {
 
     if(command.size() != 3) {
-        std::cout << "error: must specify new owner and file" << std::endl;
+        std::cout << "error: must specify new group and file" << std::endl;
     }
     else {
         Properties* target_prop;
-        std::string new_owner = command[1];
+        std::string new_group = command[1];
         std::string file_to_change = command[2];
 
-        // need to check if new owner exists
-        std::vector<User>::iterator it_user;
-        it_user = std::find_if(users.begin(),
-                            users.end(),
-                            [&new_owner](User const& target)
+        // need to check if new group exists
+        std::vector<std::string>::iterator it_group;
+        it_group = std::find_if(s_groups.begin(),
+                            s_groups.end(),
+                            [&new_group](std::string const& target)
                             {
-                                return (target.getName() == new_owner);
+                                return (target == new_group);
                             }
         );
 
-        if(it_user != users.end()) {
+        if(it_group != s_groups.end()) {
             std::vector<File>::iterator it_file;
             it_file = std::find_if(current_dir->files.begin(),
                             current_dir->files.end(),
@@ -544,14 +546,14 @@ void Shell::chgrp(std::vector<std::string> command) {
             if(it_file != current_dir->files.end()) {
                 target_prop = current_dir->files[std::distance
                     (current_dir->files.begin(), it_file)].getProp();
-                target_prop->owner = new_owner;
+                target_prop->group = new_group;
             }
             else {
                 std::cout << "error: file not found" << std::endl;
             }
         }
         else {
-            std::cout << "error: user does not exist" << std::endl;
+            std::cout << "error: group does not exist" << std::endl;
         }
     }
 
