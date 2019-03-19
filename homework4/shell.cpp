@@ -53,7 +53,7 @@ void Shell::process(std::string& command) {
             useradd(cmd);
         }
         else if (cmd[0] == "usermod") {
-            std::cout << "doing usermod!" << std::endl;
+            usermod(cmd);
         }
         else if (cmd[0] == "chown") {
             std::cout << "doing chown!" << std::endl;
@@ -432,7 +432,30 @@ void Shell::useradd(std::vector<std::string> command) {
 }
 
 void Shell::usermod(std::vector<std::string> command) {
-
+    if(command.size() != 4) {
+        std::cout << "error: invalid usermod command" << std::endl;
+        return;
+    }
+    if((command[1] == "-a") && (command[2] == "-G")) {
+        std::string group_to_add = command[3];
+        std::vector<std::string>::iterator it;
+        it = std::find_if(s_groups.begin(),
+                          s_groups.end(),
+                          [&group_to_add](std::string const& target)
+                          {
+                            return (target == group_to_add);
+                          }
+        );
+        if(it != s_groups.end()) {
+            current_user->setGroup(group_to_add);
+        }
+        else {
+            std::cout << "error: group does not exist" << std::endl;
+        }
+    }
+    else {
+        std::cout << "error: invalid options" << std::endl;
+    }
     return;
 }
 

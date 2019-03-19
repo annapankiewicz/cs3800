@@ -34,6 +34,9 @@ class User
         void setName(std::string name);
         std::string getName() const;
 
+        void setGroup(std::string group_name);
+        std::string getGroup() const;
+
 };
 
 #endif
