@@ -232,7 +232,10 @@ void Shell::mkdir(std::vector<std::string> command) {
         return;
     }
     else {
-        File new_file(filename, false);
+        File new_file(filename,
+                      false,
+                      current_user->getName(),
+                      current_user->getGroup());
         new_file.setParent(current_dir);
         current_dir->files.push_back(new_file);
     }
@@ -368,7 +371,10 @@ void Shell::touch(std::vector<std::string> command) {
     // if the file's not found, create it
     // also assuming we can't make a file with the same name as a directory
     else {
-        File new_file(filename, true);
+        File new_file(filename,
+                      true,
+                      current_user->getName(),
+                      current_user->getGroup());
         new_file.setParent(current_dir);
         current_dir->files.push_back(new_file);
     }
