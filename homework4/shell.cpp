@@ -56,7 +56,7 @@ void Shell::process(std::string& command) {
             usermod(cmd);
         }
         else if (cmd[0] == "chown") {
-            std::cout << "doing chown!" << std::endl;
+            chown(cmd);
         }
         else if (cmd[0] == "chgrp") {
             std::cout << "doing chgrp!" << std::endl;
@@ -460,6 +460,47 @@ void Shell::usermod(std::vector<std::string> command) {
 }
 
 void Shell::chown(std::vector<std::string> command) {
+    if(command.size() != 3) {
+        std::cout << "error: must specify new owner and file" << std::endl;
+    }
+    else {
+        Properties* target_prop;
+        std::string new_owner = command[1];
+        std::string file_to_change = command[2];
+
+        // need to check if new owner exists
+        std::vector<User>::iterator it_user;
+        it_user = std::find_if(users.begin(),
+                            users.end(),
+                            [&new_owner](User const& target)
+                            {
+                                return (target.getName() == new_owner);
+                            }
+        );
+
+        if(it_user != users.end()) {
+            std::vector<File>::iterator it_file;
+            it_file = std::find_if(current_dir->files.begin(),
+                            current_dir->files.end(),
+                            [&file_to_change](File const& target)
+                            {
+                                return (target.getName() == file_to_change);
+                            }
+            );
+
+            if(it_file != current_dir->files.end()) {
+                target_prop = current_dir->files[std::distance
+                    (current_dir->files.begin(), it_file)].getProp();
+                target_prop->owner = new_owner;
+            }
+            else {
+                std::cout << "error: file not found" << std::endl;
+            }
+        }
+        else {
+            std::cout << "error: user does not exist" << std::endl;
+        }
+    }
 
     return;
 }
