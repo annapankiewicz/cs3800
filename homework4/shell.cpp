@@ -68,7 +68,7 @@ void Shell::process(std::string& command) {
             groups(cmd);
         }
         else if (cmd[0] == "groupadd") {
-            std::cout << "doing groupadd!" << std::endl;
+            groupadd(cmd);
         }
         else if (cmd[0] == "userdel") {
             userdel(cmd);
@@ -553,6 +553,25 @@ void Shell::groups(std::vector<std::string> command) {
 }
 
 void Shell::groupadd(std::vector<std::string> command) {
+    if(command.size() != 2) {
+        std::cout << "error: must specify group to add" << std::endl;
+        return;
+    }
+    std::string group_to_add = command[1];
+    std::vector<std::string>::iterator it;
+    it = std::find_if(s_groups.begin(),
+                      s_groups.end(),
+                      [&group_to_add](std::string const& target)
+                      {
+                      return (target == group_to_add);
+                      }
+    );
+    if(it == s_groups.end()) {
+        s_groups.push_back(group_to_add);
+    }
+    else {
+        std::cout << "error: group already exists" << std::endl;
+    }
 
     return;
 }
