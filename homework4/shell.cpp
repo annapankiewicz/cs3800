@@ -156,7 +156,8 @@ void Shell::ls(std::vector<std::string> command) {
     else if(command.size() == 2) {
         if(command[1] == "-l") {
             for(int i = 0; i < current_dir->files.size(); i++) {
-                std::cout << current_dir->files[i].longListing() << std::endl;
+                if(checkIfUserHasPermissions(current_dir->files[i], 0))
+                    std::cout << current_dir->files[i].longListing() << std::endl;
             }
         }
         else {
