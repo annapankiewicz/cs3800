@@ -84,3 +84,7 @@ bool Permissions::checkPermissionValidity(int permission_code, int access[MODE_S
 bool Permissions::validDigit(const int digit) {
     return ((digit>=0) && (digit<=7));
 }
+
+bool Permissions::getPermissions(int index) {
+    return permissions[index];
+}

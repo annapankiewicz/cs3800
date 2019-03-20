@@ -37,6 +37,8 @@ class User
         void setGroup(std::string group_name);
         std::string getGroup() const;
 
+        bool matchGroup(std::string group_name);
+
 };
 
 #endif

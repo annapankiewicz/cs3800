@@ -33,6 +33,8 @@ class Permissions
 
         bool validDigit(const int digit);
 
+        bool getPermissions(int index);
+
 };
 
 #endif

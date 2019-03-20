@@ -29,6 +29,9 @@ class Shell
         void parseCommand(std::string command, std::vector<std::string>& result);
         void parseGroups(std::string command, std::vector<std::string>& result);
 
+        bool checkIfUserHasPermissions(File file_to_check, int access_mode);
+        User* getCurrentUser();
+
         void ls(std::vector<std::string> command);
         void cd(std::vector<std::string> command);
         void pwd(std::vector<std::string> command);

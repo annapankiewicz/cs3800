@@ -18,6 +18,8 @@ Shell::Shell() {
     s_groups.push_back("users");
 }
 
+/* -------------- Input Processing Functions -------------- */
+
 void Shell::process(std::string& command) {
 
     std::vector<std::string> cmd;
@@ -111,6 +113,35 @@ void Shell::parseGroups(std::string command, std::vector<std::string>& result) {
     }
     return;
 }
+
+/* -------------- Helper Functions -------------- */
+
+bool Shell::checkIfUserHasPermissions(File file_to_check, int access_mode) {
+    // need to check if the user is owner and has access to do the mode
+    // specified
+    bool access = false;
+    if((file_to_check.getProp()->owner) == (current_user->getName())) {
+        access = file_to_check.getProp()->permissions.getPermissions(access_mode);
+    }
+
+    // if that fails, need to check if user belongs to the owning group
+    // of the file
+    else if(current_user->matchGroup(file_to_check.getProp()->group)) {
+        access = file_to_check.getProp()->permissions.getPermissions(access_mode+3);
+    }
+
+    // finally, check if there's public access for that mode
+    else {
+        access = file_to_check.getProp()->permissions.getPermissions(access_mode+6);
+    }
+    return access;
+}
+
+// User* getCurrentUser() {
+
+// }
+
+/* -------------- Command Functions -------------- */
 
 void Shell::ls(std::vector<std::string> command) {
 
@@ -590,6 +621,8 @@ void Shell::execute(std::vector<std::string> command) {
 }
 
 void Shell::groups(std::vector<std::string> command) {
+    // TODO(anna): should this just be for current user? or should you specify
+    // username
     if(command.size() == 1) {
         for(int i = 0; i < current_user->u_groups.size(); i++) {
             std::cout << current_user->u_groups[i] << "\t";
