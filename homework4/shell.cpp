@@ -613,16 +613,21 @@ void Shell::execute(std::vector<std::string> command) {
         // get actual file name to be executed
         std::string file = command[0];
         file = file.substr(2);
+        int index = -1;
         bool found = false;
         for(int i = 0; i < current_dir->files.size(); i++) {
             if((current_dir->files[i].getName() == file) &&
                (current_dir->files[i].getFileType())) {
                 found = true;
+                index = i;
                 break;
             }
         }
         if(found) {
-            std::cout << file << " executed" << std::endl;
+            if (checkIfUserHasPermissions(current_dir->files[index], 2))
+                std::cout << file << " executed" << std::endl;
+            else
+                std::cout << "error: invalid execute permissions" << std::endl;
         }
         else {
             std::cout << "error: file not found" << std::endl;
