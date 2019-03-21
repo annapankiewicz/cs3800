@@ -302,8 +302,13 @@ void Shell::rmdir(std::vector<std::string> command) {
 
     // if the file is found, remove it
     if(it != current_dir->files.end()) {
-        int target_index = std::distance(current_dir->files.begin(), it);
-        current_dir->files.erase(current_dir->files.begin() + target_index);
+        if(checkIfUserHasPermissions(*it, 1)) {
+            int target_index = std::distance(current_dir->files.begin(), it);
+            current_dir->files.erase(current_dir->files.begin() + target_index);
+        }
+        else {
+            std::cout << "error: invalid write permissions" << std::endl;
+        }
     }
     else {
         std::cout << "error: no such directory to remove" << std::endl;
@@ -338,7 +343,7 @@ void Shell::rm(std::vector<std::string> command) {
             current_dir->files.erase(current_dir->files.begin() + target_index);
         }
         else {
-            std::cout << "error: invalid permissions" << std::endl;
+            std::cout << "error: invalid write permissions" << std::endl;
         }
     }
     else {
