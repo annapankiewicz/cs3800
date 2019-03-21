@@ -117,23 +117,23 @@ void Shell::parseGroups(std::string command, std::vector<std::string>& result) {
 /* -------------- Helper Functions -------------- */
 
 bool Shell::checkIfUserHasPermissions(File file_to_check, int access_mode) {
-    // need to check if the user is owner and has access to do the mode
-    // specified
+
     bool access = false;
+
+    // check public access first
+    access = file_to_check.getProp()->permissions.getPermissions(access_mode+6);
+
+    // check if the user is owner and has access to do the mode specified
     if((file_to_check.getProp()->owner) == (current_user->getName())) {
         access = file_to_check.getProp()->permissions.getPermissions(access_mode);
     }
 
-    // if that fails, need to check if user belongs to the owning group
-    // of the file
-    else if(current_user->matchGroup(file_to_check.getProp()->group)) {
+    // if that fails and user doesn't have permission yet,
+    // need to check if user belongs to the owning group
+    else if((current_user->matchGroup(file_to_check.getProp()->group)) && !access) {
         access = file_to_check.getProp()->permissions.getPermissions(access_mode+3);
     }
 
-    // finally, check if there's public access for that mode
-    else {
-        access = file_to_check.getProp()->permissions.getPermissions(access_mode+6);
-    }
     return access;
 }
 
@@ -148,7 +148,8 @@ void Shell::ls(std::vector<std::string> command) {
     // process just a normal ls
     if(command.size() == 1) {
         for(int i = 0; i < current_dir->files.size(); i++) {
-            std::cout << current_dir->files[i].getName() << "\t";
+            if(checkIfUserHasPermissions(current_dir->files[i], 0))
+                std::cout << current_dir->files[i].getName() << "\t";
         }
         std::cout << std::endl;
     }
