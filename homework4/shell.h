@@ -30,7 +30,7 @@ class Shell
         void parseGroups(std::string command, std::vector<std::string>& result);
 
         bool checkIfUserHasPermissions(File file_to_check, int access_mode);
-        User* getCurrentUser();
+        std::string getCurrentUser();
 
         void ls(std::vector<std::string> command);
         void cd(std::vector<std::string> command);

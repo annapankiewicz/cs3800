@@ -137,9 +137,9 @@ bool Shell::checkIfUserHasPermissions(File file_to_check, int access_mode) {
     return access;
 }
 
-// User* getCurrentUser() {
-
-// }
+std::string Shell::getCurrentUser() {
+    return current_user->getName();
+}
 
 /* -------------- Command Functions -------------- */
 
