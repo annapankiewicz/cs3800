@@ -206,14 +206,18 @@ void Shell::cd(std::vector<std::string> command) {
         }
 
         if(found) {
-            // set parent pointer
-            target->setParent(current_dir);
-            // update current working directory pointer
-            current_dir = target;
+            if(checkIfUserHasPermissions(*target, 2)) {
+                // set parent pointer
+                target->setParent(current_dir);
+                // update current working directory pointer
+                current_dir = target;
+            }
+            else {
+                std::cout << "error: invalid permissions" << std::endl;
+            }
         }
         else {
             std::cout << "error: invalid directory" << std::endl;
-            return;
         }
     }
 
@@ -374,11 +378,16 @@ void Shell::chmod(std::vector<std::string> command) {
     );
 
     if(it != current_dir->files.end()) {
-        // where is the thing
-        int target_index = std::distance(current_dir->files.begin(), it);
-        // do the thing
-        current_dir->files[target_index].getProp()->permissions.
-            updatePermissions(stoi(command[1]));
+        if(checkIfUserHasPermissions(*it, 1)) {
+            // where is the thing
+            int target_index = std::distance(current_dir->files.begin(), it);
+            // do the thing
+            current_dir->files[target_index].getProp()->permissions.
+                updatePermissions(stoi(command[1]));
+        }
+        else {
+            std::cout << "error: invalid permissions" << std::endl;
+        }
 
     }
     else {
@@ -402,8 +411,14 @@ void Shell::touch(std::vector<std::string> command) {
     // check to see if the file already exists in the directory we're in
     for(int i = 0; i < current_dir->files.size(); i++) {
         if(current_dir->files[i].getName() == filename) {
-            found = true;
-            target = current_dir->files[i].getProp();
+            if(checkIfUserHasPermissions(current_dir->files[i], 1)) {
+                found = true;
+                target = current_dir->files[i].getProp();
+            }
+            else {
+                std::cout << "error: invalid permissions" << std::endl;
+                return;
+            }
         }
     }
 
@@ -540,9 +555,14 @@ void Shell::chown(std::vector<std::string> command) {
             );
 
             if(it_file != current_dir->files.end()) {
-                target_prop = current_dir->files[std::distance
-                    (current_dir->files.begin(), it_file)].getProp();
-                target_prop->owner = new_owner;
+                if(checkIfUserHasPermissions(*it_file, 1)) {
+                    target_prop = current_dir->files[std::distance
+                        (current_dir->files.begin(), it_file)].getProp();
+                    target_prop->owner = new_owner;
+                }
+                else {
+                    std::cout << "error: invalid permissions" << std::endl;
+                }
             }
             else {
                 std::cout << "error: file not found" << std::endl;
@@ -587,9 +607,14 @@ void Shell::chgrp(std::vector<std::string> command) {
             );
 
             if(it_file != current_dir->files.end()) {
-                target_prop = current_dir->files[std::distance
-                    (current_dir->files.begin(), it_file)].getProp();
-                target_prop->group = new_group;
+                if(checkIfUserHasPermissions(*it_file, 1)) {
+                    target_prop = current_dir->files[std::distance
+                        (current_dir->files.begin(), it_file)].getProp();
+                    target_prop->group = new_group;
+                }
+                else {
+                    std::cout << "error: invalid permissions" << std::endl;
+                }
             }
             else {
                 std::cout << "error: file not found" << std::endl;
