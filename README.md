@@ -91,3 +91,44 @@ users. Implement a new switchto command which will switch to a different user.
 This program is to be coded in C++ and submitted in Canvas before the deadline.
 This is an individual assignment – each person should produce and submit their
 own code solution.
+
+## Homework 5
+
+This program will mimic the safe interaction of shared resources utilizing the
+“dirty/clean fork” algorithm found with the dining philosopher problem.
+There will be a given number of programs executing concurrently (the number
+will be specified at runtime and could change with each run). We will refer to
+each process as Phil (five executing concurrently would be Phil 0, Phil 1, ...
+P3, P4). The purpose of each Phil is to generate some text and write it to a
+file. Because Phils are overly skeptical, they will only write their data if
+they can simultaneously write it out to TWO separate (but specific!) files
+(which ensures the data will be safe). Phil 0 will write to File 0 and File 1.
+Phil 1 will write to File 1 and File 2. ... Phil N (the last Phil) will write
+to File N and File 0. Clearly there is a possibility Phil 0 and Phil 1 could
+attempt to write to File 1 at the same time (this is the critical resource
+whose safe access we need to ensure). Each Phil will be coded with a sequence
+of “generating” (simulating creation of content), followed by the desire to
+“write” (use the shared resource to output the generation into the files).
+Each Phil needs to keep track of their file’s “status” (i.e., which of the
+Phils can write to that file) and can only write when they have access to
+*BOTH* of their associated files. To simplify things, each file will be
+assigned to a Phil (I’ll call it “available” to that Phil) – with all
+files initially assigned to the highest-numbered Phil (so Phil N has File
+0 and File N “available”, Phil 0 has File 0 and File 1 both “unavailable”,
+etc.).
+
+Additionally, each file’s status will contain a “used” indicator which will
+help prevent starvation – all initially set to “used”. After a Phil has
+“generated” something to output, it checks to see if its two files are
+“available” and will write out when that is the case. If file(s) are
+unavailable, messages will be sent requesting the unavailable file(s) and
+Phil will have to wait until it receives (a) message(s) back stating the
+file(s) are available. When a file’s “availability” changes from one Phil
+to another, the receiving Phil will update their local status to “unused”.
+When a Phil writes out to the files, the files’ status will be updated to
+“used” (indicating it has had a chance to “use” the files it was requesting).
+When a message request is received by Phil x, if the file is available and
+used, Phil x will mark the file as unavailable and alert the sender the file
+is free (available for the sender to write to). If the file is currently marked
+as “unused” Phil will wait until their next file write has finished and then
+alert the sender the file is free.
