@@ -6,14 +6,14 @@
 #include "mpi.h"
 #include "pomerize.h"
 
-//run compiled code (for 5 Phils) with mpirun -n 5 program
+//run compiled code (for 5 philosophers) with mpirun -n 5 program
 
 using namespace std;
 
 //this is how many poems you want each Phil to construct & save
 const int MAXMESSAGES = 10; 
 
-//if you change this base, update the Makefile "clean" accordingly to remove old poems
+//if you change this base, update the Makefile "clean" accordingly
 const string fileBase = "outFile"; 
 
 int main ( int argc, char *argv[] ) 
@@ -26,7 +26,7 @@ int main ( int argc, char *argv[] )
   //  Initialize MPI.
   MPI::Init ( argc, argv );
 
-  //  Get the number of total processes.
+  //  Get the number of processes.
   p = MPI::COMM_WORLD.Get_size ( );
 
   //  Determine the rank of this process.
@@ -45,12 +45,12 @@ int main ( int argc, char *argv[] )
   
   //setup message storage locations
   int msgIn, msgOut;
-  int leftNeighbor = id;
+  int leftNeighbor = (id + p - 1) % p;
   int rightNeighbor = (id + 1) % p;
 
   pomerize P;
 
-  string lFile = fileBase + to_string(leftNeighbor);
+  string lFile = fileBase + to_string(id);
   string rFile = fileBase + to_string(rightNeighbor);
   ofstream foutLeft(lFile.c_str(), ios::out | ios::app );
   ofstream foutRight(rFile.c_str(), ios::out | ios::app );
@@ -64,20 +64,23 @@ int main ( int argc, char *argv[] )
         
     //receive 1 test message from each neighbor
 	MPI::COMM_WORLD.Recv ( &msgIn, 1, MPI::INT, MPI::ANY_SOURCE, tag, status );
-//	std::cout << "Receiving message " << msgIn << " from Philosopher ";
+//	std::cout << "ID " << id << " receiving message " << msgIn << " from Philosopher ";
 //	std::cout << status.Get_source() << std::endl;
 
 	MPI::COMM_WORLD.Recv ( &msgIn, 1, MPI::INT, MPI::ANY_SOURCE, tag, status );
-//	std::cout << "Receiving message " << msgIn << " from Philosopher ";
+//	std::cout << "ID " << id << " receiving message " << msgIn << " from Philosopher ";
 //	std::cout << status.Get_source() << std::endl;	
 
 	//LET'S JUST IGNORE THE MESSAGES AND ASSUME IT'S SAFE TO WRITE TO THE FILE!
     //std::cout << "ID: " << id << " CARELESSLY writing to " << lFile << " and " << rFile << endl;
     //If you want to see correct poems, change MAXMESSAGES to something VERY small and add this sleep
-	//sleep(id); //will delay each process so the initial interleaving(s) will likely be OK
+//	sleep(id); //will delay each process so the initial interleaving(s) will likely be OK
   
     //construct poem & output stanzas into the files 'simultaneously'
 	//we do this with an intermediate variable so both files contain the same poem!
+	foutLeft << id << "'s poem:" << endl;
+	foutRight << id << "'s poem:" << endl;
+	
 	string stanza1, stanza2, stanza3;
     stanza1 = P.getLine();
 	foutLeft << stanza1 << endl;
