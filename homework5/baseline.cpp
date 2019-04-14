@@ -67,9 +67,19 @@ int main ( int argc, char *argv[] )
         philosophers.push_back((Phil(i, true, true)));
     }
 
-    for(int i = p; i > 0; i--) {
+    // set appropriate access to files for philosophers
+    philosophers[0].setRightAvailable(false);
+    philosophers[p-2].setLeftAvailable(false);
+    for(int i = p-1; i >+ 0; i--) {
         if(philosophers[i].isLeftAvailable() && philosophers[i].isRightAvailable()) {
-            cout << "nice" << endl;
+            if(i == 0) {
+                philosophers[i+1].setRightAvailable(false);
+                philosophers[p-1].setLeftAvailable(false);
+            }
+            else {
+                philosophers[i-1].setLeftAvailable(false);
+                philosophers[i+1].setRightAvailable(false);
+            }
         }
     }
 
