@@ -70,7 +70,7 @@ int main ( int argc, char *argv[] )
     // set appropriate access to files for philosophers
     philosophers[0].setRightAvailable(false);
     philosophers[p-2].setLeftAvailable(false);
-    for(int i = p-1; i >+ 0; i--) {
+    for(int i = p-1; i >= 0; i--) {
         if(philosophers[i].isLeftAvailable() && philosophers[i].isRightAvailable()) {
             if(i == 0) {
                 philosophers[i+1].setRightAvailable(false);
