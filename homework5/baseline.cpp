@@ -17,6 +17,7 @@ const int MAXMESSAGES = 10;
 
 const int REQUEST = 0;
 const int AVAILABLE = 1;
+const int QUIT = 2;
 
 //if you change this base, update the Makefile "clean" accordingly
 const string fileBase = "outFile"; 
@@ -27,6 +28,7 @@ int main ( int argc, char *argv[] )
     int p;  //total MPI processes
     MPI::Status status;
     int tag = 1;
+    int neighbor;
 
     //  Initialize MPI.
     MPI::Init ( argc, argv );
@@ -50,7 +52,7 @@ int main ( int argc, char *argv[] )
     int used = true;        // each file starts out as "used"
 
     //setup message storage locations
-    int msgIn, msgOut;
+    int msgIn;
     int leftNeighbor = (id + p - 1) % p;
     int rightNeighbor = (id + 1) % p;
 
@@ -88,50 +90,93 @@ int main ( int argc, char *argv[] )
     while (numWritten < MAXMESSAGES) {
         // current philosopher tied to process is philosophers[id]
 
-        // check that the philosopher has access to its files
-        if(philosophers[id].isLeftAvailable() && philosophers[id].isRightAvailable())
+        // check if the philosopher has access to its files
+        if(!philosophers[id].isLeftAvailable() || !philosophers[id].isRightAvailable() || !used)
         {
-            // remove access from other philosophers
-            philosophers[id].setLeftAvailable(false);
-            philosophers[id].setRightAvailable(false);
+            if(!philosophers[id].isLeftAvailable()) {
+                // ask for the left file
+                MPI::COMM_WORLD.Send(&REQUEST, 1, MPI::INT, leftNeighbor, tag);
+                // receive response
+                MPI::COMM_WORLD.Recv(&msgIn, 1, MPI::INT, leftNeighbor, tag, status);
 
-            // we have both files, okay to write our poems
-            // construct poem & output stanzas into the files 'simultaneously'
-            foutLeft << id << "'s poem:" << endl;
-            foutRight << id << "'s poem:" << endl;
-
-            string stanza1, stanza2, stanza3;
-            stanza1 = P.getLine();
-            foutLeft << stanza1 << endl;
-            foutRight << stanza1 << endl;
-
-            stanza2 = P.getLine();
-            foutLeft << stanza2 << endl;
-            foutRight << stanza2 << endl;
-
-            stanza3 = P.getLine();
-            foutLeft << stanza3 << endl << endl;
-            foutRight << stanza3 << endl << endl;
-
-            numWritten++;
-
-            // send the message we're done writing to the files and they're available
-            msgOut = AVAILABLE;
-            MPI::COMM_WORLD.Send ( &msgOut, 1, MPI::INT, leftNeighbor, tag);
-            MPI::COMM_WORLD.Send ( &msgOut, 1, MPI::INT, rightNeighbor, tag);
-        }
-        else {
-            // files needed are unavailable, wait for them
-            do {
-                // wait for files
-                MPI::COMM_WORLD.Recv(&msgIn, 1, MPI::INT, MPI::ANY_SOURCE, tag, status);
+                if(msgIn == AVAILABLE) {
+                    // we can have the file!
+                    philosophers[id].setLeftAvailable(true);
+                }
+                else if(msgIn == QUIT) {
+                    // remove "access", we're done writing messages
+                    philosophers[id].setLeftAvailable(false);
+                }
             }
-            while (!msgIn);
-            // just to double check we're good
-            if(msgIn) {
-                // allow this philosopher to write
-                philosophers[id].setLeftAvailable(true);
-                philosophers[id].setRightAvailable(true);
+
+            if(!philosophers[id].isRightAvailable()) {
+                // ask for the right file
+                MPI::COMM_WORLD.Send(&REQUEST, 1, MPI_INT, rightNeighbor, tag);
+                // receive response
+                MPI::COMM_WORLD.Recv(&msgIn, 1, MPI::INT, rightNeighbor, tag, status);
+
+                if(msgIn == AVAILABLE) {
+                    // we can have the file!
+                    philosophers[id].setRightAvailable(true);
+                }
+                else if(msgIn == QUIT) {
+                    // remove "access", we're done writing messages
+                    philosophers[id].setRightAvailable(false);
+                }
+            }
+        }
+
+        used = false; // haven't used the files we have yet
+
+        // we have both files, okay to write our poems
+        // construct poem & output stanzas into the files 'simultaneously'
+        foutLeft << id << "'s poem:" << endl;
+        foutRight << id << "'s poem:" << endl;
+
+        string stanza1, stanza2, stanza3;
+        stanza1 = P.getLine();
+        foutLeft << stanza1 << endl;
+        foutRight << stanza1 << endl;
+
+        stanza2 = P.getLine();
+        foutLeft << stanza2 << endl;
+        foutRight << stanza2 << endl;
+
+        stanza3 = P.getLine();
+        foutLeft << stanza3 << endl << endl;
+        foutRight << stanza3 << endl << endl;
+
+        numWritten++;
+
+        used = true; // the files have been used
+
+        while(philosophers[id].isLeftAvailable()
+            || philosophers[id].isRightAvailable()) {
+
+            // handle neighbors asking for files
+            MPI::COMM_WORLD.Recv(&msgIn, 1, MPI::INT, MPI::ANY_SOURCE, tag, status);
+            neighbor = status.Get_source();
+            if(neighbor == leftNeighbor) {
+                // remove own access to file
+                philosophers[id].setLeftAvailable(false);
+                // tell neighbor they can have it, or stop if all messages written
+                if(numWritten == MAXMESSAGES) {
+                    MPI::COMM_WORLD.Send(&QUIT, 1, MPI::INT, leftNeighbor, tag);
+                }
+                else {
+                    MPI::COMM_WORLD.Send(&AVAILABLE, 1, MPI::INT, leftNeighbor, tag);
+                }
+            }
+            else if(neighbor == rightNeighbor) {
+                // remove own access to file
+                philosophers[id].setRightAvailable(false);
+                // tell neighbor they can have it, or stop if all messages written
+                if(numWritten == MAXMESSAGES) {
+                    MPI::COMM_WORLD.Send(&QUIT, 1, MPI::INT, rightNeighbor, tag);
+                }
+                else {
+                    MPI::COMM_WORLD.Send(&AVAILABLE, 1, MPI::INT, rightNeighbor, tag);
+                }
             }
         }
     }
