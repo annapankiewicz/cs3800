@@ -8,15 +8,15 @@
 #include "phil.h"
 #include "pomerize.h"
 
-#define USED 0
-#define UNUSED 1
-
 //run compiled code (for 5 philosophers) with mpirun -n 5 program
 
 using namespace std;
 
 //this is how many poems you want each Phil to construct & save
-const int MAXMESSAGES = 10; 
+const int MAXMESSAGES = 10;
+
+const int REQUEST = 0;
+const int AVAILABLE = 1;
 
 //if you change this base, update the Makefile "clean" accordingly
 const string fileBase = "outFile"; 
@@ -46,10 +46,11 @@ int main ( int argc, char *argv[] )
 
     srand(id + time(NULL)); //ensure different seeds...
 
-    int numWritten = 0;
+    int numWritten = 0;     // number of poems written
+    int used = true;        // each file starts out as "used"
 
     //setup message storage locations
-    int msgInLeft, msgInRight, msgOut;
+    int msgIn, msgOut;
     int leftNeighbor = (id + p - 1) % p;
     int rightNeighbor = (id + 1) % p;
 
@@ -68,19 +69,20 @@ int main ( int argc, char *argv[] )
     }
 
     // set appropriate access to files for philosophers
-    philosophers[0].setRightAvailable(false);
-    philosophers[p-2].setLeftAvailable(false);
-    for(int i = p-1; i >= 0; i--) {
-        if(philosophers[i].isLeftAvailable() && philosophers[i].isRightAvailable()) {
-            if(i == 0) {
-                philosophers[i+1].setRightAvailable(false);
-                philosophers[p-1].setLeftAvailable(false);
-            }
-            else {
-                philosophers[i-1].setLeftAvailable(false);
-                philosophers[i+1].setRightAvailable(false);
-            }
-        }
+    if(id == p-1) {
+        // highest numbered philosopher gets both
+        philosophers[id].setRightAvailable(true);
+        philosophers[id].setLeftAvailable(true);
+    }
+    else if (id == 0) {
+        // Phil 0 gets neither
+        philosophers[0].setRightAvailable(false);
+        philosophers[0].setLeftAvailable(false);
+    }
+    else {
+        // make the rest of the philosophers have their left file
+        philosophers[id].setRightAvailable(false);
+        philosophers[id].setLeftAvailable(true);
     }
 
     while (numWritten < MAXMESSAGES) {
@@ -114,21 +116,19 @@ int main ( int argc, char *argv[] )
             numWritten++;
 
             // send the message we're done writing to the files and they're available
-            msgOut = UNUSED;
+            msgOut = AVAILABLE;
             MPI::COMM_WORLD.Send ( &msgOut, 1, MPI::INT, leftNeighbor, tag);
             MPI::COMM_WORLD.Send ( &msgOut, 1, MPI::INT, rightNeighbor, tag);
         }
         else {
             // files needed are unavailable, wait for them
             do {
-                // wait for file on the left
-                MPI::COMM_WORLD.Recv(&msgInLeft, 1, MPI::INT, leftNeighbor, tag, status);
-                // wait for file on the right
-                MPI::COMM_WORLD.Recv(&msgInRight, 1, MPI::INT, rightNeighbor, tag, status);
+                // wait for files
+                MPI::COMM_WORLD.Recv(&msgIn, 1, MPI::INT, MPI::ANY_SOURCE, tag, status);
             }
-            while (!msgInLeft && !msgInRight);
+            while (!msgIn);
             // just to double check we're good
-            if(msgInLeft && msgInRight) {
+            if(msgIn) {
                 // allow this philosopher to write
                 philosophers[id].setLeftAvailable(true);
                 philosophers[id].setRightAvailable(true);
